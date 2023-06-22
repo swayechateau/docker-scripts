@@ -13,8 +13,14 @@ services:
     ports:
       - 5432:5432
 
-  # adminer:
-  #   image: adminer
-  #   restart: always
-  #   ports:
-  #     - 8080:8080
+  admin:
+    image: dpage/pgadmin4
+    restart: always
+    links:
+      - db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: $PGADMIN_DEFAULT_EMAIL
+      PGADMIN_DEFAULT_PASSWORD: $PGADMIN_DEFAULT_PASSWORD
+    ports:
+      - 8080:80
+      # - 4343:443
