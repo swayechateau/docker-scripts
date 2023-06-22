@@ -1,0 +1,18 @@
+version: '3.4'
+services:
+  cosmos:
+    container_name: test-linux-emulator 
+    restart: always
+    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator
+    environment:
+      AZURE_COSMOS_EMULATOR_PARTITION_COUNT: 10
+      AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE: true
+      AZURE_COSMOS_EMULATOR_IP_ADDRESS_OVERRIDE: $ipaddr
+    ports:
+      - "8081:8081" 
+      - "10250-10255:10250-10255"
+    mem_limit: 3g
+    
+    # --interactive \
+    # --tty \
+    

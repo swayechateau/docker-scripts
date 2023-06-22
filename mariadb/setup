@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# create .env file
+if [ ! -f "${PWD}/.env" ]
+then
+    cp .env.example .env
+fi
+
+read -p "Set MYSQL root password? (default = N) (Y/N): " confirm 
+if [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]]
+then
+    read -p "Enter MYSQL root password: " password
+
+    if [ $(./scripts/checkos) == "Mac" ]
+    then
+        sed -i "" "s/^MYSQL_ROOT_PASSWORD=.*/MYSQL_ROOT_PASSWORD=${password}/" ${PWD}/.env
+    else
+        sed -i "s/^MYSQL_ROOT_PASSWORD=.*/MYSQL_ROOT_PASSWORD=${password}/" ${PWD}/.env
+    fi
+    echo "Password set successfully"
+fi
+
+echo "Starting docker container"
+docker-compose up -d

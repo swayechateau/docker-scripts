@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+set -e
+
+echo 'CHECKING NETWORK: traefik_default'
+if [[ $(docker network ls -f "name=traefik_default" --format '{{.Name}}') == 'traefik_default' ]]
+then
+    echo 'NETWORK FOUND!'
+else
+    echo 'NETWORK NOT FOUND!'
+    echo 'CREATING NETWORK: traefik_default'
+    docker network create traefik_default
+fi
+
+echo 'CHECKING CONTAINER: traefik'
+if [[ $(docker ps -f "name=traefik" --format '{{.Names}}') == 'traefik' ]]
+then
+    echo '!'
+    docker stop traefik
+    echo 'CONTAINER FOUND!'
+    docker rm traefik
+fi
+
+
+echo 'PORTS: Scanning'
+if nc 127.0.0.1 80 < /dev/null 2>/dev/null
+then
+    HTTP_PORT=8000
+    HTTPS_PORT=8001
+else
+    HTTP_PORT=80
+    HTTPS_PORT=443
+fi
+echo "PORTS: Using $HTTP_PORT, $HTTPS_PORT"
+
+echo 'PROXY CONTAINER: Starting'
+docker-compose up -d
+echo 'PROXY CONTAINER: Started'

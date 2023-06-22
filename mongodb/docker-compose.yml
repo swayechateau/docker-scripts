@@ -1,0 +1,14 @@
+version: '3.4'
+services:
+  mongodb:
+    container_name: mongodb
+    restart: always
+    image: mongo:5.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: $MONGO_INITDB_ROOT_USERNAME
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_INITDB_ROOT_PASSWORD
+    ports:
+      - "27017:27017"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mongodb.rule=Host(`mongodb.localhost`)"

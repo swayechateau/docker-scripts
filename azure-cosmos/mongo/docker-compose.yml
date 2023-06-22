@@ -1,0 +1,22 @@
+version: '3.4'
+services:
+  mongo:
+    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:mongodb
+    container_name: test-linux-emulator-mongo
+    restart: always
+    environment:
+      AZURE_COSMOS_EMULATOR_PARTITION_COUNT: 10
+      AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE: true
+      AZURE_COSMOS_EMULATOR_IP_ADDRESS_OVERRIDE: $ipaddr
+      AZURE_COSMOS_EMULATOR_ENABLE_MONGODB_ENDPOINT: 4.0 
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "8081:8081"
+      - "10250-10255:10250-10255" 
+    # networks:
+    #   - cosmos-network
+
+    # --interactive \
+    # --tty \
+    

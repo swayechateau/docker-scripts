@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+ipaddr="`ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk '{print $2}' | head -n 1`"
+echo "IPADDR=$ipaddr" > ./.env
+docker pull mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator
+
+# Install Certificates
+ipaddr="`ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk '{print $2}' | head -n 1`"
+curl -k https://$ipaddr:8081/_explorer/emulator.pem > emulatorcert.crt
