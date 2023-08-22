@@ -1,0 +1,6 @@
+#!/bin/bash
+docker run --name postgres-db \
+  -e POSTGRES_PASSWORD=mysecretpassword \
+  -e PGDATA=/var/lib/postgresql/data/pgdata \
+	-v ./:/var/lib/postgresql/data \
+  -d postgres 
