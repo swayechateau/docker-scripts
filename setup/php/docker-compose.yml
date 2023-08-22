@@ -1,0 +1,8 @@
+version: "3.4"
+
+services:
+  php:
+    image: swaye/php:8.1.0
+    user: $DOCKER_USER
+    volumes:
+      - "./src:/var/www/html"

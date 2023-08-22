@@ -1,0 +1,19 @@
+#!/bin/bash
+
+CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+# create .env file
+if [ ! -f "${CWD}/.env" ]
+then
+    cp .env.example .env
+fi
+
+user="$(id -u):$(id -g)"
+echo "Setting docker user and group to: ${user}"
+
+if [ $(./checkos) == "Mac" ]
+then
+sed -i "" "s/^DOCKER_USER=.*/DOCKER_USER=${user}/" ${CWD}/.env
+else
+sed -i "s/^DOCKER_USER=.*/DOCKER_USER=${user}/" ${CWD}/.env
+fi
