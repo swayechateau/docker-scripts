@@ -1,32 +1,31 @@
 FROM php:8.0.30-apache
 
-# Update package index and install required packages
-RUN apk update && apk upgrade
-
-# Set environment variables
+# update base container ubuntu OS
+RUN apt-get update -y
+# change apache root
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+# update apache default conf
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# Update Apache configuration
-RUN sed -ri -e 's!/var/www/localhost/htdocs!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/httpd.conf
+RUN apt-get update && apt-get install -y libmcrypt-dev \
+    libmagickwand-dev libzip-dev zip libfreetype6-dev \
+    libjpeg62-turbo-dev libpng-dev --no-install-recommends \
+    && docker-php-ext-install zip \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd \ 
+    && docker-php-ext-install pdo_mysql
 
-# Enable necessary Apache modules
-RUN sed -i '/LoadModule rewrite_module/s/^#//g' /etc/apache2/httpd.conf
-
-# Configure PHP extensions and Apache modules
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install -j$(getconf _NPROCESSORS_ONLN) gd zip pdo_mysql
-
-# Enable Imagick PHP extension
-RUN pecl install imagick && docker-php-ext-enable imagick
-
-# Install Composer
+# install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# update composer
+RUN composer self-update
+# install git
+RUN apt install git -y
+# install nodejs
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash
+RUN apt install nodejs -y
 
-# Install Node.js and npm
-RUN apk add --no-cache nodejs npm
-
-# Expose port 80
 EXPOSE 80
-
-# Start Apache service
-CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]

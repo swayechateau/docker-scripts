@@ -1,5 +1,4 @@
-FROM php:8.0.10-apache
-
+FROM php:8.2.10RC1-apache-bullseye
 # update base container ubuntu OS
 RUN apt-get update -y
 # change apache root
